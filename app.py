@@ -9,7 +9,7 @@ CORS(app)
 client = MongoClient("mongodb://localhost:27017/")
 
 # Database
-db = client["Brewscap"]
+db = client["Brewscape"]
 
 # Collection
 orders = db["orders"]
