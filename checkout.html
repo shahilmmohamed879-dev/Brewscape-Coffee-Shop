@@ -378,15 +378,17 @@
 
       const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
       orderTotal.innerHTML = `<span>Total</span><span>${formatPrice(totalAmount)}</span>`;
+      localStorage.setItem('cartTotal', totalAmount.toFixed(2));
     }
 
-    function placeOrder() {
+    async function placeOrder() {
       const name = document.getElementById('name').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const email = document.getElementById('email').value.trim();
       const address = document.getElementById('address').value.trim();
       const paymentMethod = document.getElementById('payment').value;
       const cart = readCart();
+      const total = localStorage.getItem('cartTotal') || cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
 
       if (!name || !phone || !address) {
         alert('Please fill in your name, phone, and delivery address before placing your order.');
@@ -397,11 +399,39 @@
         return;
       }
 
-      const customer = { name, phone, email, address, paymentMethod };
-      localStorage.setItem('customer', JSON.stringify(customer));
-      localStorage.setItem('cart', JSON.stringify(cart));
-      localStorage.setItem(storageKey, JSON.stringify(cart));
-      window.location.href = 'orderconfirmation.html';
+      const order = {
+        name,
+        phone,
+        email,
+        address,
+        paymentMethod,
+        items: cart,
+        total,
+        date: new Date().toLocaleString()
+      };
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/place-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(order)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          localStorage.removeItem('cart');
+          localStorage.removeItem(storageKey);
+          localStorage.removeItem('cartTotal');
+          window.location.href = 'placeorder.html';
+        } else {
+          alert(result.message || 'Failed to place order. Please try again.');
+        }
+      } catch (error) {
+        alert('Unable to place your order at this time. Please try again later.');
+        console.error('Order submit error:', error);
+      }
     }
 
     renderOrderSummary();
