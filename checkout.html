@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brewscape | Checkout</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root {
+    --cream: #F8F4EE;
+    --cream-dark: #F1E7DA;
+    --white: #FFFDF9;
+    --coffee: #4E342E;
+    --coffee-dark: #2D1B16;
+    --gold: #C69C6D;
+    --gold-light: #E6C8A0;
+    --green: #3F6B4B;
+    --green-light: #EDF5EF;
+    --text: #2B2B2B;
+    --gray: #6F6F6F;
+    --border: #E6DDD3;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #221510;
+    background-image: radial-gradient(circle at top right, rgba(198,156,109,0.12), transparent 45%), radial-gradient(circle at bottom left, rgba(111,78,55,0.08), transparent 40%);
+    color: var(--text);
+  }
+
+  a { text-decoration: none; color: inherit; }
+
+  /* NAVBAR */
+  header {
+    display: flex;
+    align-items: center;
+    padding: 18px 60px;
+    background: rgba(248,244,238,0.94);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--coffee-dark);
+  }
+
+  .checkout-title {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+
+  .checkout-title h1 {
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    color: var(--coffee);
+  }
+
+  .checkout-title p {
+    color: var(--gray);
+    font-size: 15px;
+    margin-top: 10px;
+  }
+
+  .checkout-container {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  .customer-box,
+  .summary-box {
+    background: rgba(255,255,255,0.95);
+    border-radius: 22px;
+    padding: 36px;
+    box-shadow: 0 18px 45px rgba(15, 12, 10, 0.12);
+  }
+
+  .customer-box h2,
+  .summary-box h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 26px;
+    color: var(--coffee-dark);
+  }
+
+  form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray);
+    margin: 18px 0 8px;
+    letter-spacing: 0.2px;
+  }
+
+  form label:first-of-type {
+    margin-top: 0;
+  }
+
+  form input,
+  form textarea,
+  form select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid #e3ded4;
+    border-radius: 14px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: rgba(248,244,238,0.95);
+    outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+
+  form input:focus,
+  form textarea:focus,
+  form select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(198,156,109,0.12);
+  }
+
+  form textarea {
+    resize: vertical;
+  }
+
+  form select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236f6f6f' stroke-width='2'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  form button {
+    margin-top: 28px;
+    width: 100%;
+    background: linear-gradient(135deg, var(--coffee), var(--gold));
+    color: var(--white);
+    border: none;
+    padding: 16px;
+    border-radius: 32px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.6px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 14px 30px rgba(78, 52, 46, 0.18);
+  }
+
+  form button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 35px rgba(78, 52, 46, 0.22);
+  }
+
+  .summary-box {
+    align-self: start;
+  }
+
+  #order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .order-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(136,110,88,0.15);
+  }
+
+  .order-item-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .order-item-icon {
+    width: 46px;
+    height: 46px;
+    background: linear-gradient(135deg, var(--coffee), var(--gold));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 10px 20px rgba(78, 52, 46, 0.18);
+  }
+
+  .order-item-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--coffee-dark);
+  }
+
+  .order-item-name span {
+    display: block;
+    font-weight: 400;
+    color: var(--gray);
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  .order-item-price {
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--coffee);
+    white-space: nowrap;
+  }
+
+  .empty-note {
+    color: var(--gray);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  #order-total {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1.5px dashed rgba(136,110,88,0.3);
+    font-size: 19px;
+    font-weight: 800;
+    display: flex;
+    justify-content: space-between;
+    color: var(--coffee-dark);
+  }
+
+  .order-note {
+    margin-top: 18px;
+    background: rgba(248,244,238,0.9);
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: var(--gray);
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .order-note i {
+    color: var(--coffee);
+    margin-top: 2px;
+  }
+
+  @media (max-width: 850px) {
+    .checkout-container {
+      grid-template-columns: 1fr;
+      padding: 0 24px 60px;
+    }
+    header { padding: 16px 24px; }
+    .checkout-title h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header>
+    <h1><i class="fa-solid fa-mug-hot" style="color:var(--green)"></i> BREWSCAPE</h1>
+  </header>
+
+  <!-- CHECKOUT HEADING -->
+  <section class="checkout-title">
+    <h1>Checkout</h1>
+    <p>Complete your coffee order</p>
+  </section>
+
+  <!-- MAIN CONTAINER -->
+  <div class="checkout-container">
+
+    <!-- CUSTOMER DETAILS -->
+    <div class="customer-box">
+      <h2>Customer Details</h2>
+      <form id="checkoutForm">
+        <label>Full Name</label>
+        <input type="text" id="name" required>
+
+        <label>Phone Number</label>
+        <input type="tel" id="phone" required>
+
+        <label>Email</label>
+        <input type="email" id="email">
+
+        <label>Delivery Address</label>
+        <textarea id="address" rows="4" required></textarea>
+
+        <label>Payment Method</label>
+        <select id="payment">
+          <option>Cash On Delivery</option>
+          <option>UPI</option>
+          <option>Credit Card</option>
+          <option>Debit Card</option>
+        </select>
+
+        <button type="button" onclick="placeOrder()">Place Order</button>
+      </form>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="summary-box">
+      <h2>Order Summary</h2>
+      <div id="order-items">
+        <p class="empty-note">Items will appear here</p>
+      </div>
+      <h3 id="order-total">
+        <span>Total</span><span>₹0</span>
+      </h3>
+      <div class="order-note">
+        <i class="fa-solid fa-circle-info"></i>
+        <span>Orders are roasted and packed fresh once confirmed. Delivery usually takes 2-4 business days.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const storageKey = 'brewscapeCart';
+    const orderItems = document.getElementById('order-items');
+    const orderTotal = document.getElementById('order-total');
+
+    function formatPrice(value) {
+      return `RS ${value.toFixed(2)}`;
+    }
+
+    function readCartFromQuery() {
+      const params = new URLSearchParams(window.location.search);
+      const cartParam = params.get('cart');
+      if (!cartParam) return null;
+      try {
+        return JSON.parse(decodeURIComponent(cartParam));
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function readCart() {
+      const queryCart = readCartFromQuery();
+      if (queryCart && Array.isArray(queryCart) && queryCart.length) {
+        localStorage.setItem(storageKey, JSON.stringify(queryCart));
+        return queryCart;
+      }
+      return JSON.parse(localStorage.getItem(storageKey) || '[]');
+    }
+
+    function renderOrderSummary() {
+      const cart = readCart();
+      if (!cart.length) {
+        orderItems.innerHTML = '<p class="empty-note">Your cart is empty. Add items from the shop to see your order summary.</p>';
+        orderTotal.innerHTML = `<span>Total</span><span>${formatPrice(0)}</span>`;
+        return;
+      }
+
+      orderItems.innerHTML = cart.map(item => `
+        <div class="order-item">
+          <div class="order-item-left">
+            <div class="order-item-icon"><i class="${item.iconClass}"></i></div>
+            <div class="order-item-name">${item.name}<span>Qty: ${item.qty}</span></div>
+          </div>
+          <div class="order-item-price">${formatPrice(item.price * item.qty)}</div>
+        </div>
+      `).join('');
+
+      const totalAmount = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      orderTotal.innerHTML = `<span>Total</span><span>${formatPrice(totalAmount)}</span>`;
+    }
+
+    function placeOrder() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const paymentMethod = document.getElementById('payment').value;
+      const cart = readCart();
+
+      if (!name || !phone || !address) {
+        alert('Please fill in your name, phone, and delivery address before placing your order.');
+        return;
+      }
+      if (!cart.length) {
+        alert('Your cart is empty. Add items from the shop before placing your order.');
+        return;
+      }
+
+      const customer = { name, phone, email, address, paymentMethod };
+      localStorage.setItem('customer', JSON.stringify(customer));
+      localStorage.setItem('cart', JSON.stringify(cart));
+      localStorage.setItem(storageKey, JSON.stringify(cart));
+      window.location.href = 'orderconfirmation.html';
+    }
+
+    renderOrderSummary();
+  </script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brewscape | Payment Confirmed</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+  body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#F8F4EE;
+    background-image:radial-gradient(circle at 20% 20%, #EFE3D2 0%, #F8F4EE 60%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:30px 0;
+  }
+  .confirmation-box{
+    width:560px;
+    background:#FFFDF9;
+    padding:45px 40px;
+    border-radius:24px;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(78,52,46,.18);
+    position:relative;
+    overflow:hidden;
+  }
+  .confirmation-box::before{
+    content:"";
+    position:absolute;
+    top:-60px;
+    right:-60px;
+    width:160px;
+    height:160px;
+    background:#F1E2CC;
+    border-radius:50%;
+    opacity:.6;
+  }
+  .cup-wrap{
+    position:relative;
+    width:90px;
+    height:90px;
+    margin:0 auto 10px;
+  }
+  .cup{
+    font-size:70px;
+    line-height:1;
+  }
+  .steam{
+    position:absolute;
+    top:-18px;
+    left:50%;
+    transform:translateX(-50%);
+    font-size:22px;
+    color:#C69C6D;
+    opacity:0;
+    animation:rise 2.2s ease-in-out infinite;
+  }
+  .steam.s2{ animation-delay:.6s; left:38%; }
+  .steam.s3{ animation-delay:1.2s; left:62%; }
+  @keyframes rise{
+    0%{ opacity:0; transform:translateY(0) translateX(-50%) scale(.8); }
+    30%{ opacity:.8; }
+    100%{ opacity:0; transform:translateY(-35px) translateX(-50%) scale(1.1); }
+  }
+  .badge{
+    width:54px;
+    height:54px;
+    background:#4E342E;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#FFFDF9;
+    font-size:28px;
+    margin:0 auto 18px;
+    box-shadow:0 6px 14px rgba(78,52,46,.35);
+  }
+  h1{
+    color:#4E342E;
+    margin:0 0 6px;
+    font-size:26px;
+  }
+  .subtext{
+    color:#8B7768;
+    margin:0 0 25px;
+    font-size:15px;
+  }
+  .panel{
+    background:#FBF6EE;
+    border:1px solid #EEE3D5;
+    border-radius:16px;
+    padding:20px 22px;
+    text-align:left;
+    margin-bottom:20px;
+  }
+  .row{
+    display:flex;
+    justify-content:space-between;
+    padding:6px 0;
+    font-size:14px;
+    color:#6F4E37;
+  }
+  .row span:last-child{
+    color:#4E342E;
+    font-weight:bold;
+    text-align:right;
+  }
+  hr{
+    border:none;
+    border-top:1px solid #EEE3D5;
+    margin:8px 0;
+  }
+  #items .item-row{
+    display:flex;
+    justify-content:space-between;
+    padding:5px 0;
+    font-size:14px;
+    color:#4E342E;
+  }
+  .total-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:20px;
+    font-weight:bold;
+    color:#4E342E;
+    margin-top:8px;
+  }
+  .status-pill{
+    display:inline-block;
+    background:#E7F3E8;
+    color:#2E7D32;
+    font-size:13px;
+    font-weight:bold;
+    padding:5px 14px;
+    border-radius:20px;
+    margin-bottom:20px;
+  }
+  .delivery{
+    color:#6F4E37;
+    font-size:14px;
+    margin-bottom:25px;
+  }
+  button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:30px;
+    background:#4E342E;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    transition:background .2s,color .2s;
+  }
+  button:hover{
+    background:#C69C6D;
+    color:#2D1B16;
+  }
+</style>
+</head>
+<body>
+<div class="confirmation-box">
+  <div class="cup-wrap">
+    <span class="steam s1">~</span>
+    <span class="steam s2">~</span>
+    <span class="steam s3">~</span>
+    <div class="cup">☕</div>
+  </div>
+  <div class="badge">✓</div>
+  <h1>Payment Successful!</h1>
+  <p class="subtext">Thank you for your order. Your coffee is being brewed.</p>
+
+  <span class="status-pill">● Payment Confirmed</span>
+
+  <div class="panel">
+    <div class="row"><span>Order ID</span><span id="orderid"></span></div>
+    <div class="row"><span>Customer</span><span id="customer"></span></div>
+    <div class="row"><span>Payment Method</span><span id="paymethod"></span></div>
+    <div class="row"><span>Transaction ID</span><span id="txnid"></span></div>
+    <hr>
+    <div id="items"></div>
+    <hr>
+    <div class="total-row"><span>Total Paid</span><span id="amount">₹0</span></div>
+  </div>
+
+  <p class="delivery">Estimated Delivery Time : <b>20 - 30 Minutes</b></p>
+
+  <button onclick="goHome()">Back To Home</button>
+</div>
+
+<script>
+  const cartStorageKey = 'brewscapeCart';
+  let cart = JSON.parse(localStorage.getItem(cartStorageKey) || localStorage.getItem("cart") || '[]');
+  let customer = JSON.parse(localStorage.getItem("customer")) || {};
+
+  let total = 0;
+  let output = "";
+
+  cart.forEach(function(item){
+    const qty = item.qty || 1;
+    const lineTotal = item.price * qty;
+    total += lineTotal;
+    output += `<div class="item-row"><span>☕ ${item.name} x${qty}</span><span>₹${lineTotal}</span></div>`;
+  });
+
+  document.getElementById("items").innerHTML = output || "<p>No items found.</p>";
+  document.getElementById("amount").innerHTML = "₹" + total;
+  document.getElementById("customer").innerHTML = customer.name || "Guest";
+  document.getElementById("orderid").innerHTML = "BS" + Math.floor(Math.random()*90000+10000);
+  document.getElementById("paymethod").innerHTML = customer.paymentMethod || "UPI";
+  document.getElementById("txnid").innerHTML = "TXN" + Date.now().toString().slice(-8);
+
+  function clearCartStorage(){
+    localStorage.removeItem("cart");
+    localStorage.removeItem("brewscapeCart");
+  }
+
+  clearCartStorage();
+
+  function goHome(){
+    localStorage.removeItem("customer");
+    window.location.href = "index.html";
+  }
+</script>
+</body>
+</html>
