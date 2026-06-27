@@ -37,7 +37,7 @@ BrewScape is a responsive coffee shop website designed with a premium UI/UX insp
 - Flask
 
 ### Database
-- MongoDB Atlas
+- MongoDB Compass
 
 ### Version Control
 - Git
@@ -154,31 +154,6 @@ Open
 ```
 http://127.0.0.1:5000
 ```
-
----
-
-## 📸 Screenshots
-
-### Home Page
-
-(Add Screenshot)
-
-### Coffee Menu
-
-(Add Screenshot)
-
-### Shopping Cart
-
-(Add Screenshot)
-
-### Checkout
-
-(Add Screenshot)
-
-### Order Confirmation
-
-(Add Screenshot)
-
 ---
 
 ## 🎯 Future Improvements
